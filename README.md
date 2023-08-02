@@ -14,6 +14,12 @@ Modify `constants.py.default` to use your own [OpenAI API key](https://platform.
 
 Place your own data into `data/data.txt`.
 
+change the /tmp file to write&read.
+
+``` bash
+chmod -R 777 /tmp
+```
+
 ## Example usage
 Test reading `data/data.txt` file.
 ```
