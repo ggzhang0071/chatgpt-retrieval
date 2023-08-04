@@ -13,7 +13,7 @@ from langchain.vectorstores import Chroma
 
 import gradio as  gr
 
-os.environ["OPENAI_API_KEY"] ="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"
+os.environ["OPENAI_API_KEY"] ="sk-***"
 
 
 # Enable to save to disk & reuse the model (for repeated queries on the same data)
