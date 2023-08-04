@@ -11,7 +11,9 @@ from langchain.indexes.vectorstore import VectorStoreIndexWrapper
 from langchain.llms import OpenAI
 from langchain.vectorstores import Chroma
 
-os.environ["OPENAI_API_KEY"] ="sk-"
+import gradio as  gr
+
+os.environ["OPENAI_API_KEY"] ="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"
 
 
 # Enable to save to disk & reuse the model (for repeated queries on the same data)
@@ -26,7 +28,7 @@ if PERSIST and os.path.exists("persist"):
   vectorstore = Chroma(persist_directory="persist", embedding_function=OpenAIEmbeddings())
   index = VectorStoreIndexWrapper(vectorstore=vectorstore)
 else:
-  loader = TextLoader("data/data.txt") # Use this line if you only need data.txt
+  loader = TextLoader("data/mayun.txt") # Use this line if you only need data.txt
   #loader = DirectoryLoader("data/")
   
   if PERSIST:
@@ -40,14 +42,19 @@ chain = ConversationalRetrievalChain.from_llm(
   retriever=index.vectorstore.as_retriever(search_kwargs={"k": 1}),
 )
 
-chat_history = []
-while True:
-  if not query:
-    query = input("Prompt: ")
-  if query in ['quit', 'q', 'exit']:
-    sys.exit()
-  result = chain({"question": query, "chat_history": chat_history})
-  print(result['answer'])
+def  greet(intput):
+  chat_history = []
+  while True:
+    result = chain({"question": input, "chat_history": chat_history})
+    chat_history.append((input, result['answer']))
+    input = None
+    return result['answer']
 
-  chat_history.append((query, result['answer']))
-  query = None
+if  __name__=="__main__":
+  #demo=gr.ChatInterface(greet)
+  demo = gr.Interface(fn=greet,
+        inputs=gr.Textbox(lines=3, placeholder="Enter your question here"),
+        outputs=gr.Textbox(lines=3))
+  demo.launch()
+
+

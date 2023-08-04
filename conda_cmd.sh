@@ -1,0 +1,1 @@
+conda create -n guihua_chatgpt
