@@ -14,11 +14,10 @@ from langchain.vectorstores import Chroma
 import gradio as  gr
 
 # openai api key
-os.environ["OPENAI_API_KEY"] ="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"
+os.environ["OPENAI_API_KEY"] ="sk-**"
 
 #VPN to visit openai
 os.environ["OPENAI_API_BASE"] = "https://nodomainname.win/v1/"
-
 
 # Enable to save to disk & reuse the model (for repeated queries on the same data)
 PERSIST = False
