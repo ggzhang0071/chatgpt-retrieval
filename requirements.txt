@@ -1,6 +1,5 @@
- langchain
+langchain
 openai 
 chromadb 
-tiktoken 
-unstructured
 gradio
+flask
