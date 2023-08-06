@@ -2,7 +2,7 @@ import os
 import sys
 
 import openai
-from langchain.chains import ConversationalRetrievalChain, RetrievalQA
+from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import DirectoryLoader, TextLoader
 from langchain.embeddings import OpenAIEmbeddings
@@ -13,8 +13,11 @@ from langchain.vectorstores import Chroma
 
 import gradio as  gr
 
+# openai api key
 os.environ["OPENAI_API_KEY"] ="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"
 
+#VPN to visit openai
+#os.environ["OPENAI_API_BASE"] = "https://nodomainname.win/v1/"
 
 # Enable to save to disk & reuse the model (for repeated queries on the same data)
 PERSIST = False
@@ -28,7 +31,7 @@ if PERSIST and os.path.exists("persist"):
   vectorstore = Chroma(persist_directory="persist", embedding_function=OpenAIEmbeddings())
   index = VectorStoreIndexWrapper(vectorstore=vectorstore)
 else:
-  loader = TextLoader("data/mayun.txt") # Use this line if you only need data.txt
+  loader = TextLoader("data/data.txt") # Use this line if you only need data.txt
   #loader = DirectoryLoader("data/")
   
   if PERSIST:
@@ -42,7 +45,10 @@ chain = ConversationalRetrievalChain.from_llm(
   retriever=index.vectorstore.as_retriever(search_kwargs={"k": 1}),
 )
 
-def  greet(intput):
+def  greet(input,request: gr.Request):
+  if request:
+    print("Request headers dictionary:", request.headers)
+    print("IP address:", request.client.host)
   chat_history = []
   while True:
     result = chain({"question": input, "chat_history": chat_history})
@@ -51,10 +57,10 @@ def  greet(intput):
     return result['answer']
 
 if  __name__=="__main__":
-  #demo=gr.ChatInterface(greet)
+  # gradio 用于网页展示
   demo = gr.Interface(fn=greet,
         inputs=gr.Textbox(lines=3, placeholder="Enter your question here"),
-        outputs=gr.Textbox(lines=3))
+        outputs=gr.Textbox(lines=3) )
   demo.launch()
 
 
