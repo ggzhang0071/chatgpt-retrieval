@@ -13,11 +13,8 @@ from langchain.vectorstores import Chroma
 
 import gradio as  gr
 
-# openai api key
-os.environ["OPENAI_API_KEY"] ="sk-**"
+os.environ["OPENAI_API_KEY"] ="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"
 
-#VPN to visit openai
-os.environ["OPENAI_API_BASE"] = "https://nodomainname.win/v1/"
 
 # Enable to save to disk & reuse the model (for repeated queries on the same data)
 PERSIST = False
@@ -31,6 +28,7 @@ if PERSIST and os.path.exists("persist"):
   vectorstore = Chroma(persist_directory="persist", embedding_function=OpenAIEmbeddings())
   index = VectorStoreIndexWrapper(vectorstore=vectorstore)
 else:
+  loader = TextLoader("data/data.txt") # Use this line if you only need data.txt
   loader = TextLoader("data/data.txt") # Use this line if you only need data.txt
   #loader = DirectoryLoader("data/")
   
@@ -58,9 +56,10 @@ def  greet(input,request: gr.Request):
 
 if  __name__=="__main__":
   # gradio 用于网页展示
+  # gradio 用于网页展示
   demo = gr.Interface(fn=greet,
         inputs=gr.Textbox(lines=3, placeholder="Enter your question here"),
-        outputs=gr.Textbox(lines=3) )
-  demo.launch(share=True,server_name="10.176.5.199",server_port=8080)
+        outputs=gr.Textbox(lines=3))
+  demo.launch()
 
 
