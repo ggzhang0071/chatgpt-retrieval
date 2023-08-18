@@ -1,7 +1,3 @@
-import os
-import sys
-
-import openai
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import DirectoryLoader, TextLoader
@@ -10,10 +6,12 @@ from langchain.indexes import VectorstoreIndexCreator
 from langchain.indexes.vectorstore import VectorStoreIndexWrapper
 from langchain.llms import OpenAI
 from langchain.vectorstores import Chroma
-
 import gradio as  gr
+import openai, os, sys
+from  langchain_dir_load  import load_files_from_directory
 
-os.environ["OPENAI_API_KEY"] ="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"
+
+os.environ["OPENAI_API_KEY"] ="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"
 
 
 # Enable to save to disk & reuse the model (for repeated queries on the same data)
@@ -23,20 +21,13 @@ query = None
 if len(sys.argv) > 1:
   query = sys.argv[1]
 
-if PERSIST and os.path.exists("persist"): 
-  print("Reusing index...\n")
-  vectorstore = Chroma(persist_directory="persist", embedding_function=OpenAIEmbeddings())
-  index = VectorStoreIndexWrapper(vectorstore=vectorstore)
-else:
-  loader = TextLoader("data/data.txt") # Use this line if you only need data.txt
-  loader = TextLoader("data/data.txt") # Use this line if you only need data.txt
-  #loader = DirectoryLoader("data/")
-  
-  if PERSIST:
-    index = VectorstoreIndexCreator(vectorstore_kwargs={"persist_directory":"persist"}).from_loaders([loader])
-  else:
+dir_path  = "./data"
+documents = load_files_from_directory(dir_path)
 
-    index = VectorstoreIndexCreator().from_loaders([loader])
+if PERSIST:
+    index = VectorstoreIndexCreator(vectorstore_kwargs={"persist_directory":"persist"}).from_loaders([loader])
+else:
+    index = VectorstoreIndexCreator().from_documents(documents)
 
 chain = ConversationalRetrievalChain.from_llm(
   llm=ChatOpenAI(model="gpt-3.5-turbo"),
@@ -55,7 +46,6 @@ def  greet(input,request: gr.Request):
     return result['answer']
 
 if  __name__=="__main__":
-  # gradio 用于网页展示
   # gradio 用于网页展示
   demo = gr.Interface(fn=greet,
         inputs=gr.Textbox(lines=3, placeholder="Enter your question here"),
