@@ -11,7 +11,9 @@ import openai, os, sys
 from  langchain_dir_load  import load_files_from_directory
 
 
-os.environ["OPENAI_API_KEY"] ="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"
+os.environ["OPENAI_API_KEY"] ="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"
+#os.environ["OPENAI_API_BASE"] = "https://api.openai.mycompany.com/v1/"
+
 
 
 # Enable to save to disk & reuse the model (for repeated queries on the same data)

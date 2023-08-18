@@ -1,4 +1,5 @@
-from langchain.document_loaders import CSVLoader, UnstructuredPDFLoader
+from langchain.document_loaders import CSVLoader, UnstructuredPDFLoader,UnstructuredExcelLoader, Docx2txtLoader
+
 from langchain.document_loaders.merge import MergedDataLoader
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
@@ -39,6 +40,10 @@ def load_files_from_directory(directory_path):
                 loader = UnstructuredPDFLoader(file_path, mode="single", strategy="fast", check_extractable=False)
             elif filename.endswith('.csv'):
                 loader = CSVLoader(file_path)
+            elif filename.endswith('.xlsx'):
+                loader = UnstructuredExcelLoader(file_path, mode="elements")
+            elif filename.endswith('.docx'):
+                loader = Docx2txtLoader(file_path)
             else:
                 # we aren't surpport the file now,continue
                 #print("we aren't surpport the file format {} ".format(filename))
